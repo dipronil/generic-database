@@ -1,0 +1,195 @@
+{
+	"info": {
+		"_postman_id": "d24b009b-053a-4292-8596-876c2cc62723",
+		"name": "Supabase clone",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "12457882"
+	},
+	"item": [
+		{
+			"name": "create table",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"tableName\":\"Posts\",\n    \"schema\":{\n        \"id\":{\n            \"type\": \"integer\",\n            \"primaryKey\":true,\n            \"unique\": true,\n            \"nullable\":false\n        },\n        \"title\":{\n            \"type\": \"string\"\n        },\n        \"description\":{\n            \"type\": \"string\"\n        },\n        \"status\":{\n            \"type\": \"boolean\"\n        },\n        \"userId\":{\n            \"type\": \"integer\",\n            \"foreignKey\":true,\n            \"reference\":{\n                \"tableName\":\"users\",\n                \"columnName\":\"id\"\n            }\n        }\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/v1/createTable",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"createTable"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "user table create",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"tableName\":\"Users\",\n    \"schema\":{\n        \"id\":{\n            \"type\": \"integer\",\n            \"primaryKey\":true,\n            \"unique\": true,\n            \"nullable\":false\n        },\n        \"firstName\":{\n            \"type\": \"string\",\n            \"primaryKey\":false,\n            \"unique\": true,\n            \"nullable\":false\n        },\n        \"lastName\":{\n            \"type\": \"string\",\n            \"primaryKey\":false,\n            \"unique\": false,\n            \"nullable\":false\n        },\n        \"phone\":{\n            \"type\": \"string\",\n            \"primaryKey\":false,\n            \"unique\": true,\n            \"nullable\":false\n        },\n        \"age\":{\n            \"type\": \"integer\",\n            \"primaryKey\":false,\n            \"unique\": false,\n            \"nullable\":true\n        },\n        \"status\":{\n            \"type\": \"boolean\",\n            \"primaryKey\":false,\n            \"unique\": false,\n            \"nullable\":false\n        }\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/v1/createTable",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"createTable"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "34"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"22-FcQ0ia8oNJx+S/UYpOl1m7DubHA\""
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 03 Jun 2024 08:50:30 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"Table already exists\"\n}"
+				},
+				{
+					"name": "posts table create",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"tableName\": \"Posts\",\n    \"schema\": {\n        \"id\": {\n            \"type\": \"integer\",\n            \"primaryKey\": true,\n            \"unique\": true,\n            \"nullable\": false\n        },\n        \"title\": {\n            \"type\": \"string\"\n        },\n        \"description\": {\n            \"type\": \"string\",\n            \"defaultValue\":\"dummy text\"\n        },\n        \"status\": {\n            \"type\": \"boolean\"\n        },\n        \"userId\": {\n            \"type\": \"integer\",\n            \"foreignKey\": true,\n            \"reference\": {\n                \"tableName\": \"users\",\n                \"columnName\": \"id\"\n            }\n        }\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/v1/createTable",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"createTable"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "27"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"1b-eLz6fBvE4GQPhquIeq4YUrc7QUA\""
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 03 Jun 2024 11:18:32 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"table created\"\n}"
+				}
+			]
+		},
+		{
+			"name": "update table",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"tableName\":\"Users\",\n    \"schema\":{\n        \"marks\":{\n            \"type\": \"integer\",\n            \"primaryKey\":true,\n            \"unique\": true,\n            \"nullable\":false\n        }\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/v1/updateTable",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"updateTable"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

@@ -94,6 +94,7 @@ app.post("/api/v1/updateTable", async (req, res) => {
   }
 });
 
+/*** get gata */
 app.post("/api/v1/getData", async (req, res) => {
   try {
     const tableName = req?.body?.tableName?.toLowerCase();
@@ -108,6 +109,7 @@ app.post("/api/v1/getData", async (req, res) => {
     let query = "";
     if (schema.hasOwnProperty("attribute")) {
       const attributes = schema["attribute"];
+      
       if (Array.isArray(attributes) && attributes.length > 0) {
         const attributeList = attributes.join(", ");
         query = `SELECT ${attributeList} FROM ${tableName}`;
@@ -116,18 +118,27 @@ app.post("/api/v1/getData", async (req, res) => {
       }
     }
 
+    // if (schema.hasOwnProperty("where")) {
+    //   const whereCond = schema["where"];
+
+    //   const whereClauses = Object.keys(whereCond).map((key) => {
+    //     return `${key} = ${whereCond[key]}`;
+    //   });
+    //   query = `SELECT * FROM ${tableName} WHERE ${whereClauses.join(" AND ")}`;
+    // } else {
+    //   query = `SELECT * FROM ${tableName}`;
+    // }
+    
     if (schema.hasOwnProperty("where")) {
-      const whereCond = schema["where"];
+        const whereCond = schema["where"];
+  
+        const whereClauses = Object.keys(whereCond).map((key) => {
+          return `${key} = ${whereCond[key]}`;
+        });
+        query += ` WHERE ${whereClauses.join(" AND ")}`;
+      } 
 
-      const whereClauses = Object.keys(whereCond).map((key) => {
-        return `${key} = ${whereCond[key]}`;
-      });
-      query = `SELECT * FROM ${tableName} WHERE ${whereClauses.join(" AND ")}`;
-    } else {
-      query = `SELECT * FROM ${tableName}`;
-    }
-
-    console.log(query);
+      console.log(query);
 
     const isTableExists = await checkTableExists(tableName);
     if (isTableExists) {
