@@ -26,7 +26,6 @@ app.post('/api/v1/createTable', async (req, res) => {
             let createTableQuery = `CREATE TABLE ${tableName} (\n`;
             for (const key in schema) {
                 if (schema.hasOwnProperty(key)) {
-
                     if (key === 'id' && schema[key].type == 'integer') {
                         createTableQuery += `    ${key} SERIAL`;
                     }else{
@@ -84,6 +83,25 @@ app.post('/api/v1/updateTable', async (req, res) => {
             pool.query(updateTableQuery);
             return res.json({ message: 'Table updated' }) 
         } else{
+            return res.json({ message: 'Table not exists' })
+        }
+    } catch (error) {
+        console.log(error);
+    }
+})
+
+app.post('/api/v1/getData', async (req,res)=>{
+    try {
+        const tableName = req?.body?.tableName.toLowerCase();
+        const schema = req?.body?.schema;
+
+        let isTableExists = await checkTableExists(tableName);
+        if (isTableExists) {
+            console.log(`select * from posts`);
+            const result = await pool.query(`select * from ${tableName}`);
+            console.log(result);
+            res.json(result.rows);
+        } else {
             return res.json({ message: 'Table not exists' })
         }
     } catch (error) {
