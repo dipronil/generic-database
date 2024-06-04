@@ -5,7 +5,7 @@ const pool = new Pool({
   user: 'postgres',
   host: 'localhost',
   database: 'supabase-clone',
-  password: 'dipronil',
+  password: '123456',
   port: 5432, // default PostgreSQL port
 });
 
