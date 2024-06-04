@@ -116,6 +116,8 @@ app.post("/api/v1/getData", async (req, res) => {
       } else {
         return res.status(400).json({ message: "Invalid schema attributes." });
       }
+    } else {
+        query = `SELECT * FROM ${tableName}`;
     }
 
     // if (schema.hasOwnProperty("where")) {
