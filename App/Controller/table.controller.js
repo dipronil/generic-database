@@ -1,5 +1,5 @@
 const mapType = require("../Helper/dataType");
-const { pool } = require("../../Config/")
+const { pool } = require("../../Config/");
 const {
   checkTableExists,
   checkColumnExists,
@@ -51,7 +51,7 @@ exports.createTable = async (req, res, next) => {
       return res.json({ message: "table created" });
     }
   } catch (error) {
-    next(error)
+    next(error);
   }
 };
 
@@ -79,10 +79,9 @@ exports.updateTable = async (req, res, next) => {
       return res.json({ message: "Table not exists" });
     }
   } catch (error) {
-    next(error)
+    next(error);
   }
 };
-
 
 
 exports.getTableData = async (req, res, next) => {
@@ -94,7 +93,6 @@ exports.getTableData = async (req, res, next) => {
     const where = req?.body?.where;
     const excludeAttribute = req?.body?.excludeAttribute;
     const include = req?.body?.include;
-
 
     if (!tableName || !operation) {
       return res.status(400).json({
@@ -109,25 +107,27 @@ exports.getTableData = async (req, res, next) => {
 
     let query = "";
     switch (operation) {
-      case 'findAll':
-        query = await getFindAll(tableName, attribute,where);
+      case "findAll":
+        query = await getFindAll(tableName, attribute, where, include);
         break;
-      case 'findById':
+      case "findById":
         query = await getFindById(tableName, attribute, id);
         break;
-      case 'findOne':
+      case "findOne":
         query = await getFindOne(tableName, attribute, where);
         break;
       default:
         throw new Error(`Unsupported operation: ${operation}`);
     }
-
     console.log(query);
     const result = await pool.query(query);
-
-    return res.json(result.rows);
+    if (operation == 'findOne') {
+        return res.json(result.rows[0]);
+    }else{
+        return res.json(result.rows);
+    }
   } catch (error) {
     console.log(error);
-    next(error)
+    next(error);
   }
-}
+};
