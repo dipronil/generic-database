@@ -19,7 +19,6 @@ queryDatabase();
 app.use('/api/v1', tableRoute);
 app.use(pageNotFound);
 
-console.log(typeof errorHandler); 
 app.use(errorHandler);
 
 // /***** create table */
@@ -160,7 +159,7 @@ app.use(errorHandler);
 //     res.status(500).json({ message: "Internal server error" });
 //   }
 // });
-const port = 3000;
+port = 3000;
 
 app.listen(port, () => {
   console.log(`Server started at ${port}`);
