@@ -1,4 +1,4 @@
-const { pool } = require("../DbConfig");
+const { pool } = require("../../Config");
 
 exports.checkTableExists = async (tableName) => {
     const query = `
@@ -21,7 +21,6 @@ exports.checkTableExists = async (tableName) => {
     const res = await pool.query(query, [tableName, columnName]);
     return res.rows.length > 0;
   };
-
 
   exports.modifyScheme = async (schema)=>{
     if (!('id' in schema)) {
