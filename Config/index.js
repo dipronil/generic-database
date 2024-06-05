@@ -2,11 +2,11 @@ const { Pool } = require('pg');
 
 // Create a new pool instance with your database configuration
 const pool = new Pool({
-  user: 'postgres',
-  host: 'localhost',
-  database: 'supabase-clone',
-  password: '12345678',
-  port: 5432,
+  user: process.env.USER,
+  host: process.env.HOST,
+  database: process.env.DATABASE,
+  password: process.env.PASSWORD,
+  port:process.env.PORT
 });
 
 
