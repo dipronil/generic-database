@@ -19,7 +19,6 @@ queryDatabase();
 app.use('/api/v1', tableRoute);
 app.use(pageNotFound);
 
-console.log(typeof errorHandler); 
 app.use(errorHandler);
 
 // /***** create table */
