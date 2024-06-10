@@ -2,7 +2,7 @@
 const { getColumnNames, getForeignKeyData } = require("./checkTableExists");
 
 exports.getFindAll = async (tableName, attribute, where, include) => {
-  let query;
+  let query, whereQuery;
 
   if (Array.isArray(attribute) && attribute.length > 0) {
     const attributeList = attribute.join(", ");
@@ -50,7 +50,7 @@ exports.getFindAll = async (tableName, attribute, where, include) => {
         json_agg(json_build_object(${objectPairsString})) AS ${includeTableName}
         FROM ${tableName}
         INNER JOIN posts ON ${foreingnData?.referenced_table}.${foreingnData?.referenced_column} = ${includeTableName}.${foreingnData?.fk_column}
-        ${whereQuery}
+        ${whereQuery ? whereQuery : ''}
         GROUP BY ${selectClause}
     `;
 
