@@ -1,8 +1,26 @@
 const { Pool } = require("pg");
 const { mongoose } = require("mongoose");
 
+
+function identifyDatabaseUrl(url) {
+  const postgresPattern = /^postgres(?:ql)?:\/\/([^:]+)(?::([^@]+))?@([^:\/]+)(?::(\d+))?\/([^\/]+)$/;
+  const mongoDbPattern = /^mongodb(?:\+srv)?:\/\/([^:]+)(?::([^@]+))?@([^:\/]+)(?::(\d+))?(\/[^\?]*)?(\?.*)?$/;
+
+  if (postgresPattern.test(url)) {
+      return 'PostgreSQL';
+  } else if (mongoDbPattern.test(url)) {
+      return 'MongoDB';
+  } else {
+      return 'Unknown';
+  }
+}
+
 exports.establishConnectionWithUrl = async (connectionString) => {
-  console.log(connectionString);
+  const useDatabase = identifyDatabaseUrl(connectionString);
+  console.log(useDatabase);
+  switch(useDatabase){
+
+  }
 }
 
 exports.establishConnection = async (connectionData) => {
