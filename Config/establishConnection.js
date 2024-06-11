@@ -1,7 +1,47 @@
 const { Pool } = require("pg");
 const { mongoose } = require("mongoose");
 
-establishConnection = async (connectionData) => {
+
+function identifyDatabaseUrl(url) {
+  const postgresPattern = /^postgres(?:ql)?:\/\/([^:]+)(?::([^@]+))?@([^:\/]+)(?::(\d+))?\/([^\/]+)$/;
+  const mongoDbPattern = /^mongodb(?:\+srv)?:\/\/([^:]+)(?::([^@]+))?@([^:\/]+)(?::(\d+))?(\/[^\?]*)?(\?.*)?$/;
+
+  if (postgresPattern.test(url)) {
+      return 'PostgreSQL';
+  } else if (mongoDbPattern.test(url)) {
+      return 'MongoDB';
+  } else {
+      return 'Unknown';
+  }
+}
+
+exports.establishConnectionWithUrl = async (connectionString) => {
+  const useDatabase = identifyDatabaseUrl(connectionString);
+  let returnData;
+  switch(useDatabase){
+    case "PostgreSQL":
+      const pool = new Pool({
+        connectionString: connectionString,
+      });
+      try {
+        let oo = await pool.connect();
+        console.log(oo);
+        return {message:"Connected to pg", pool:pool}
+      } catch (error) {
+        throw new Error("Invalid URL");
+      }
+      
+      
+    case "MongoDB":
+      const mongoConnection = await mongoose.connect(connectionString);
+      return {message:"Connected to mongoDB", mongoConnection:mongoConnection}
+      break
+    default:
+      throw new Error("Invalid URL");
+  }
+}
+
+exports.establishConnection = async (connectionData) => {
   let pool, queryDatabase;
   switch (connectionData?.dialect) {
     case "postgres":
@@ -13,12 +53,11 @@ establishConnection = async (connectionData) => {
         port: connectionData?.port,
         // dialect:connectionData?.dialect
       });
-
+      client = await pool.connect();
       try {
-        client = await pool.connect();
-        console.log("Connected to Postgres");
+        return {message: "Connected to postgres", pool: pool}
       } catch (err) {
-        console.error("Error executing query", err.stack);
+        return {message: "Non-connected to postgres",}
       } finally {
         client.release();
       }
@@ -40,6 +79,6 @@ establishConnection = async (connectionData) => {
   }
 };
 
-module.exports = establishConnection;
+
 
 // module.exports = { queryDatabase, pool };

@@ -1,13 +1,27 @@
-const establishConnection = require("../../Config/establishConnection");
+const {establishConnection,establishConnectionWithUrl} = require("../../Config/establishConnection");
 exports.connection = async (req, res, next) => {
   try {
-    const { dialect, user, host, database, password, port, url } = req?.body;
-    const connectionPayload = {
-        dialect, user, host, database, password, port, url
+    let getConectionStatus;
+    if(typeof req.body.configration === "string"){
+        const url = req?.body?.configration
+        getConectionStatus = await establishConnectionWithUrl(url)
+        console.log(getConectionStatus);
+        return res.status(200).json({
+          message: getConectionStatus.message
+      })
+    } else {
+        const { dialect, user, host, database, password, port } = req?.body?.configration;
+        const connectionPayload = {
+            dialect, user, host, database, password, port
+        }
+        
+        getConectionStatus = await establishConnection(connectionPayload);
+        return res.status(200).json({
+            message: getConectionStatus.message
+        })
     }
-    const getConectionStatus = await establishConnection(connectionPayload);
-    return
   } catch (error) {
+    console.log(error);
     next(error);
   }
 };
