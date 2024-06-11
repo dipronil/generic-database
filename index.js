@@ -1,7 +1,9 @@
 require('dotenv').config();
 const express = require("express");
+const cors = require('cors')
 const app = express();
 const { queryDatabase } = require("./Config");
+app.use(cors());
 const bodyParser = require("body-parser");
 const {pageNotFound} = require("./App/Middleware/pageNotFoundMiddleware");
 const {errorHandler} = require("./App/Middleware/errorMiddleware");
