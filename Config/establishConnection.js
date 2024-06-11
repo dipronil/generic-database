@@ -17,11 +17,27 @@ function identifyDatabaseUrl(url) {
 
 exports.establishConnectionWithUrl = async (connectionString) => {
   const useDatabase = identifyDatabaseUrl(connectionString);
-  console.log(useDatabase);
+  let returnData;
   switch(useDatabase){
     case "PostgreSQL":
-
+      const pool = new Pool({
+        connectionString: connectionString,
+      });
+      try {
+        let oo = await pool.connect();
+        console.log(oo);
+        return {message:"Connected to pg", pool:pool}
+      } catch (error) {
+        throw new Error("Invalid URL");
+      }
+      
+      
     case "MongoDB":
+      const mongoConnection = await mongoose.connect(connectionString);
+      return {message:"Connected to mongoDB", mongoConnection:mongoConnection}
+      break
+    default:
+      throw new Error("Invalid URL");
   }
 }
 

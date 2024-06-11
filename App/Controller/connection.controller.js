@@ -5,6 +5,10 @@ exports.connection = async (req, res, next) => {
     if(typeof req.body.configration === "string"){
         const url = req?.body?.configration
         getConectionStatus = await establishConnectionWithUrl(url)
+        console.log(getConectionStatus);
+        return res.status(200).json({
+          message: getConectionStatus.message
+      })
     } else {
         const { dialect, user, host, database, password, port } = req?.body?.configration;
         const connectionPayload = {
@@ -17,6 +21,7 @@ exports.connection = async (req, res, next) => {
         })
     }
   } catch (error) {
+    console.log(error);
     next(error);
   }
 };
