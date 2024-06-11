@@ -19,7 +19,9 @@ exports.establishConnectionWithUrl = async (connectionString) => {
   const useDatabase = identifyDatabaseUrl(connectionString);
   console.log(useDatabase);
   switch(useDatabase){
+    case "PostgreSQL":
 
+    case "MongoDB":
   }
 }
 
