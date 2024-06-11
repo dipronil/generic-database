@@ -1,7 +1,11 @@
 const { Pool } = require("pg");
 const { mongoose } = require("mongoose");
 
-establishConnection = async (connectionData) => {
+exports.establishConnectionWithUrl = async (connectionString) => {
+  console.log(connectionString);
+}
+
+exports.establishConnection = async (connectionData) => {
   let pool, queryDatabase;
   switch (connectionData?.dialect) {
     case "postgres":
@@ -13,12 +17,11 @@ establishConnection = async (connectionData) => {
         port: connectionData?.port,
         // dialect:connectionData?.dialect
       });
-
+      client = await pool.connect();
       try {
-        client = await pool.connect();
-        console.log("Connected to Postgres");
+        return {message: "Connected to postgres", pool: pool}
       } catch (err) {
-        console.error("Error executing query", err.stack);
+        return {message: "Non-connected to postgres",}
       } finally {
         client.release();
       }
@@ -40,6 +43,6 @@ establishConnection = async (connectionData) => {
   }
 };
 
-module.exports = establishConnection;
+
 
 // module.exports = { queryDatabase, pool };
