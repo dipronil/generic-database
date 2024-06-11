@@ -1,11 +1,12 @@
 const mapType = require("../Helper/dataType");
-const { pool } = require("../../Config/")
+const { pool } = require("../../Config/");
 const {
   checkTableExists,
   checkColumnExists,
   modifyScheme,
 } = require("../Helper/checkTableExists");
 const { getFindAll, getFindById, getFindOne } = require("../Helper/tableInfo");
+const { Pool } = require("pg");
 
 exports.createTable = async (req, res, next) => {
   try {
@@ -51,7 +52,7 @@ exports.createTable = async (req, res, next) => {
       return res.json({ message: "table created" });
     }
   } catch (error) {
-    next(error)
+    next(error);
   }
 };
 
@@ -79,11 +80,9 @@ exports.updateTable = async (req, res, next) => {
       return res.json({ message: "Table not exists" });
     }
   } catch (error) {
-    next(error)
+    next(error);
   }
 };
-
-
 
 exports.getTableData = async (req, res, next) => {
   try {
@@ -94,7 +93,6 @@ exports.getTableData = async (req, res, next) => {
     const where = req?.body?.where;
     const excludeAttribute = req?.body?.excludeAttribute;
     const include = req?.body?.include;
-
 
     if (!tableName || !operation) {
       return res.status(400).json({
@@ -109,25 +107,65 @@ exports.getTableData = async (req, res, next) => {
 
     let query = "";
     switch (operation) {
-      case 'findAll':
-        query = await getFindAll(tableName, attribute,where);
+      case "findAll":
+        query = await getFindAll(tableName, attribute, where, include);
         break;
-      case 'findById':
+      case "findById":
         query = await getFindById(tableName, attribute, id);
         break;
-      case 'findOne':
+      case "findOne":
         query = await getFindOne(tableName, attribute, where);
         break;
       default:
         throw new Error(`Unsupported operation: ${operation}`);
     }
-
     console.log(query);
     const result = await pool.query(query);
-
-    return res.json(result.rows);
+    if (operation == "findOne") {
+      return res.json(result.rows[0]);
+    } else {
+      return res.json(result.rows);
+    }
   } catch (error) {
     console.log(error);
-    next(error)
+    next(error);
   }
-}
+};
+
+exports.databaseConnect = async (req, res, next) => {
+  const dialect = req?.body?.dialect;
+  const user = req?.body?.user;
+  const host = req?.body?.host;
+  const database = req?.body?.database;
+  const password = req?.body?.password;
+  const port = req?.body?.port;
+
+  const pool = new Pool({
+    user: user,
+    host: host,
+    database: database,
+    password: password,
+    port:port,
+  });
+
+  const client = await pool.connect();
+  try {
+    return res.json({ message: "DB connected to our service" });
+  } catch (error) {
+    client.release();
+    next(error);
+  }
+};
+
+exports.checkAccessKeys = async (req, res, next) => {
+  try {
+    console.log("AAA", req?.body?.accessKey);
+    return res.json({ message: "configured" });
+    if (req?.body?.accessKey) {
+      return res.json({ message: "configured" });
+    }
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
