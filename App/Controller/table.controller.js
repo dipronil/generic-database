@@ -1,5 +1,5 @@
 const mapType = require("../Helper/dataType");
-const { pool } = require("../../Config/");
+const { pool } = require("../../Config/establishConnection");
 const {
   checkTableExists,
   checkColumnExists,

@@ -1,4 +1,4 @@
-const { pool } = require("../../Config");
+const { pool } = require("../../Config/establishConnection");
 
 exports.checkTableExists = async (tableName) => {
   const query = `
