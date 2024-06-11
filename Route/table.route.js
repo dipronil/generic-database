@@ -10,5 +10,5 @@ router.post("/check/keys",tableController.checkAccessKeys);
 router.post("/databaseConnect",tableController.databaseConnect);
 
 router.post("/connect", connectionController.connection);
-
+router.post("/create/model", connectionController.createModel);
 module.exports = router;
