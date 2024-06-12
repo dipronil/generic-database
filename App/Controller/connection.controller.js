@@ -6,7 +6,6 @@ const mapType = require("../Helper/dataType");
 exports.connection = async (req, res, next) => {
   try {
     let getConectionStatus;
-<<<<<<< HEAD
     if(typeof req.body.configration === "string"){
         const url = req?.body?.configration
         getConectionStatus = await establishConnectionWithUrl(url)
@@ -14,11 +13,6 @@ exports.connection = async (req, res, next) => {
         return res.status(200).json({
           message: getConectionStatus.message
       })
-=======
-    if (typeof req.body.configration === "string") {
-      const url = req?.body?.configration;
-      getConectionStatus = await establishConnectionWithUrl(url);
->>>>>>> 7ed290ef65e1c20a83aad9b02e6e4d20fc270684
     } else {
       const { dialect, user, host, database, password, port } =
         req?.body?.configration;
