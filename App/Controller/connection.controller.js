@@ -1,14 +1,23 @@
 const {
   establishConnection,
   establishConnectionWithUrl,
-} = require("../../Config/establishConnection");
+} = require("../../Configration/establishConnection");
 const mapType = require("../Helper/dataType");
+const SchemaInfo = require("../../mongoModel/SchemaInfo")
+
+
 exports.connection = async (req, res, next) => {
   try {
+    const projectId = req?.header('projectId');
+    const organizationId = req?.header('organizationId');
     let getConectionStatus;
-    if (typeof req.body.configration === "string") {
-      const url = req?.body?.configration;
-      getConectionStatus = await establishConnectionWithUrl(url);
+    if(typeof req.body.configration === "string"){
+        const url = req?.body?.configration
+        getConectionStatus = await establishConnectionWithUrl(url,projectId,organizationId)
+        return res.status(200).json({
+          message: getConectionStatus.message,
+          connectionId:getConectionStatus.connectionId
+      })
     } else {
       const { dialect, user, host, database, password, port } =
         req?.body?.configration;
@@ -27,18 +36,26 @@ exports.connection = async (req, res, next) => {
       });
     }
   } catch (error) {
+    console.log(error);
     next(error);
   }
 };
 
 exports.createModel = async (req, res, next) => {
   try {
+    const projectId = req?.header('projectId');
+    const organizationId = req?.header('organizationId');
     const schema = req?.body?.schema;
     const tableName = req?.body?.tableName;
     const modelSchemaNoSQL = await convertToMongoSchema(schema);
     // const modelSchemaSQL = await convertToPostgresQuery(schema, tableName);
 
-    
+    const schemaInfo = new SchemaInfo({
+      projectId: projectId,
+      organizationId:organizationId,
+      body: modelSchemaNoSQL
+    })
+    await schemaInfo.save();
     return res.status(200).json({ noSqlSchema: modelSchemaNoSQL, SqlSchema:schema});
   } catch (error) {
     next(error);
@@ -46,12 +63,7 @@ exports.createModel = async (req, res, next) => {
 };
 
 convertToMongoSchema = (inputSchema) => {
-  const mongoSchema = {
-    _id: {
-      type: "Schema.Types.ObjectId", // Use ObjectId for MongoDB
-      auto: true,
-    },
-  };
+  const mongoSchema = {};
 
   for (const key in inputSchema) {
     if (key === "id") continue; // Skip the id field since it is mapped to _id

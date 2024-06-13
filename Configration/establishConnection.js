@@ -1,29 +1,57 @@
 const { Pool } = require("pg");
 const { mongoose } = require("mongoose");
-
-
+const {Connection} = require("../models")
 function identifyDatabaseUrl(url) {
-  const postgresPattern = /^postgres(?:ql)?:\/\/([^:]+)(?::([^@]+))?@([^:\/]+)(?::(\d+))?\/([^\/]+)$/;
-  const mongoDbPattern = /^mongodb(?:\+srv)?:\/\/([^:]+)(?::([^@]+))?@([^:\/]+)(?::(\d+))?(\/[^\?]*)?(\?.*)?$/;
+  const postgresPattern =
+    /^postgres(?:ql)?:\/\/([^:]+)(?::([^@]+))?@([^:\/]+)(?::(\d+))?\/([^\/]+)$/;
+  const mongoDbPattern =
+    /^mongodb(?:\+srv)?:\/\/([^:]+)(?::([^@]+))?@([^:\/]+)(?::(\d+))?(\/[^\?]*)?(\?.*)?$/;
 
   if (postgresPattern.test(url)) {
-      return 'PostgreSQL';
+    return "PostgreSQL";
   } else if (mongoDbPattern.test(url)) {
-      return 'MongoDB';
+    return "MongoDB";
   } else {
-      return 'Unknown';
+    return "Unknown";
   }
 }
 
-exports.establishConnectionWithUrl = async (connectionString) => {
+exports.establishConnectionWithUrl = async (connectionString,projectId,organizationId) => {
   const useDatabase = identifyDatabaseUrl(connectionString);
-  console.log(useDatabase);
-  switch(useDatabase){
+  let returnData;
+  switch (useDatabase) {
     case "PostgreSQL":
+      const pool = new Pool({
+        connectionString: connectionString,
+      });
+
+      try {
+        let oo = await pool.connect();
+
+        return { message: "Connected to pg", pool: pool };
+      } catch (error) {
+        throw new Error("Invalid URL");
+      }
 
     case "MongoDB":
+      const mongoConnection = await mongoose.connect(connectionString);
+      const connectionId = await Connection.create({
+        projectId: projectId,
+        organizationId:organizationId,
+        dialect:"MongoDB",
+        url: connectionString,
+      });
+
+      return {
+        message: "Connected to mongoDB",
+        mongoConnection: mongoConnection,
+        connectionId:connectionId
+      };
+
+    default:
+      throw new Error("Invalid URL");
   }
-}
+};
 
 exports.establishConnection = async (connectionData) => {
   let pool, queryDatabase;
@@ -39,9 +67,9 @@ exports.establishConnection = async (connectionData) => {
       });
       client = await pool.connect();
       try {
-        return {message: "Connected to postgres", pool: pool}
+        return { message: "Connected to postgres", pool: pool };
       } catch (err) {
-        return {message: "Non-connected to postgres",}
+        return { message: "Non-connected to postgres" };
       } finally {
         client.release();
       }
@@ -62,7 +90,5 @@ exports.establishConnection = async (connectionData) => {
       throw new Error("Invalid dialect");
   }
 };
-
-
 
 // module.exports = { queryDatabase, pool };
