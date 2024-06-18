@@ -56,7 +56,7 @@ exports.getFindAll = async (tableName, attribute, where, include) => {
 
     
   }
-
+  console.log(query);
   return query;
 };
 
@@ -137,5 +137,6 @@ exports.getFindOne = async (tableName, attribute, where) => {
   }
 
   query += ` WHERE ${whereClauses.join(" AND ")}`;
+  
   return query;
 };

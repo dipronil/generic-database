@@ -13,7 +13,7 @@ const schemaRoute = require("./Route/schema.route");
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 dbConnect()
-// queryDatabase();
+queryDatabase();
 app.use('/api/v1', tableRoute);
 app.use('/api/v1/schema', schemaRoute);
 app.use(pageNotFound);
