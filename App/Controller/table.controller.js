@@ -1,5 +1,5 @@
 const mapType = require("../Helper/dataType");
-const { pool } = require("../../Configration/establishConnection");
+const { pool } = require("../../Configration/");
 const {
   checkTableExists,
   checkColumnExists,
@@ -52,6 +52,7 @@ exports.createTable = async (req, res, next) => {
       return res.json({ message: "table created" });
     }
   } catch (error) {
+    console.log(error);
     next(error);
   }
 };
@@ -65,8 +66,8 @@ exports.updateTable = async (req, res, next) => {
       let updateTableQuery = `ALTER TABLE ${tableName} ADD \n`;
 
       for (const key in schema) {
-        const isColumnExists = await checkColumnExists(tableName, schema[key]);
-        if (!isColumnExists) {
+        const isColumnExists = await checkColumnExists(tableName, key);
+        if (isColumnExists) {
           return res.json({ message: `This field already exists.` });
         }
         if (schema.hasOwnProperty(key)) {

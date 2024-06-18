@@ -13,7 +13,7 @@ const pool = new Pool({
 const queryDatabase = async () => {
     const client = await pool.connect();
     try { 
-      console.log("DB connect");
+      console.log("DB connect with Postgres");
     } catch (err) {
       console.error('Error executing query', err.stack);
     }
